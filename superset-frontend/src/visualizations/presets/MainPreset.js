@@ -69,6 +69,8 @@ import {
   EchartsMixedTimeseriesChartPlugin,
   EchartsTreeChartPlugin,
 } from '@superset-ui/plugin-chart-echarts';
+import { SyntropyLineAverage } from 'syntropy-line-average';
+import { SyntropyLineAndBar } from 'syntropy-line-and-bar';
 import {
   SelectFilterPlugin,
   RangeFilterPlugin,
@@ -158,6 +160,8 @@ export default class MainPreset extends Preset {
         new EchartsTimeseriesStepChartPlugin().configure({
           key: 'echarts_timeseries_step',
         }),
+        new SyntropyLineAverage().configure({ key: 'syntropy_line_average' }),
+        new SyntropyLineAndBar().configure({ key: 'syntropy_line_and_bar' }),
         new SelectFilterPlugin().configure({ key: 'filter_select' }),
         new RangeFilterPlugin().configure({ key: 'filter_range' }),
         new TimeFilterPlugin().configure({ key: 'filter_time' }),
