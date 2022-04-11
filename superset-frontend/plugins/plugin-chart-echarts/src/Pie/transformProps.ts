@@ -150,43 +150,38 @@ export default function transformProps(
   const numberFormatter = getNumberFormatter(numberFormat);
 
   switch (pieOrdering) {
-  case 'default':
-    data.sort((a, b) => {
-      return b[metricLabel]-a[metricLabel];
-    });
-    break;
-  case 'reverse':
-    data.sort((a, b) => {
-      return a[metricLabel]-b[metricLabel];
-    });
-    break;
-  case 'alpha':
-    data.sort((a, b) => {
-      let nameA = extractGroupbyLabel({
-        datum: a,
-        groupby: groupbyLabels,
-        coltypeMapping,
-        timeFormatter: getTimeFormatter(dateFormat),
-      });
-      let nameB = extractGroupbyLabel({
-        datum: b,
-        groupby: groupbyLabels,
-        coltypeMapping,
-        timeFormatter: getTimeFormatter(dateFormat),
-      });
-      if (nameA < nameB) {
-        return -1;
-      }
-      if (nameA > nameB) {
-        return 1;
-      }
+    case 'reverse':
+      data.sort((a, b) => <number>a[metricLabel] - <number>b[metricLabel]);
+      break;
+    case 'alpha':
+      data.sort((a, b) => {
+        const nameA = extractGroupbyLabel({
+          datum: a,
+          groupby: groupbyLabels,
+          coltypeMapping,
+          timeFormatter: getTimeFormatter(dateFormat),
+        });
+        const nameB = extractGroupbyLabel({
+          datum: b,
+          groupby: groupbyLabels,
+          coltypeMapping,
+          timeFormatter: getTimeFormatter(dateFormat),
+        });
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
 
-      // names must be equal
-      return 0;
-    });
-    break;
+        // names must be equal
+        return 0;
+      });
+      break;
+    default:
+      data.sort((a, b) => <number>b[metricLabel] - <number>a[metricLabel]);
+      break;
   }
-  console.log(data);
 
   const transformedData: PieSeriesOption[] = data.map(datum => {
     const name = extractGroupbyLabel({
@@ -210,7 +205,6 @@ export default function transformProps(
       },
     };
   });
-  
 
   const selectedValues = (filterState.selectedValues || []).reduce(
     (acc: Record<string, number>, selectedValue: string) => {
