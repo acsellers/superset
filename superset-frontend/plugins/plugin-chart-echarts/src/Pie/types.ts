@@ -50,6 +50,7 @@ export type EchartsPieFormData = QueryFormData &
     dateFormat: string;
     showLabelsThreshold: number;
     emitFilter: boolean;
+    pieOrdering: string;
   };
 
 export enum EchartsPieLabelType {
