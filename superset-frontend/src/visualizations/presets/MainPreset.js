@@ -71,6 +71,7 @@ import {
 } from '@superset-ui/plugin-chart-echarts';
 import { SyntropyLineAverage } from 'syntropy-line-average';
 import { SyntropyLineAndBar } from 'syntropy-line-and-bar';
+import { SyntropyCombinationChart } from 'syntropy-combination-chart';
 import {
   SelectFilterPlugin,
   RangeFilterPlugin,
@@ -162,6 +163,7 @@ export default class MainPreset extends Preset {
         }),
         new SyntropyLineAverage().configure({ key: 'syntropy_line_average' }),
         new SyntropyLineAndBar().configure({ key: 'syntropy_line_and_bar' }),
+        new SyntropyCombinationChart().configure({ key: 'syntropy-combination-chart' }),
         new SelectFilterPlugin().configure({ key: 'filter_select' }),
         new RangeFilterPlugin().configure({ key: 'filter_range' }),
         new TimeFilterPlugin().configure({ key: 'filter_time' }),
