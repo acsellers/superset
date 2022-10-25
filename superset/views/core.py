@@ -933,7 +933,7 @@ class Superset(BaseSupersetView):  # pylint: disable=too-many-public-methods
             "force": force,
             "user": bootstrap_user_data(g.user, include_perms=True),
             "forced_height": request.args.get("height"),
-            "common": common_bootstrap_payload(),
+            "common": common_bootstrap_payload(g.user),
         }
         if slc:
             title = slc.slice_name
@@ -2024,6 +2024,8 @@ class Superset(BaseSupersetView):  # pylint: disable=too-many-public-methods
             request.args.get(utils.ReservedUrlParameters.EDIT_MODE.value) == "true"
         )
 
+        standalone_mode = ReservedUrlParameters.is_standalone_mode()
+
         add_extra_log_payload(
             dashboard_id=dashboard.id,
             dashboard_version="v2",
@@ -2033,7 +2035,7 @@ class Superset(BaseSupersetView):  # pylint: disable=too-many-public-methods
 
         bootstrap_data = {
             "user": bootstrap_user_data(g.user, include_perms=True),
-            "common": common_bootstrap_payload(),
+            "common": common_bootstrap_payload(g.user),
         }
 
         return self.render_template(
@@ -2042,6 +2044,7 @@ class Superset(BaseSupersetView):  # pylint: disable=too-many-public-methods
             bootstrap_data=json.dumps(
                 bootstrap_data, default=utils.pessimistic_json_iso_dttm_ser
             ),
+            standalone_mode=standalone_mode,
         )
 
     @has_access
@@ -2850,7 +2853,7 @@ class Superset(BaseSupersetView):  # pylint: disable=too-many-public-methods
 
         payload = {
             "user": bootstrap_user_data(g.user, include_perms=True),
-            "common": common_bootstrap_payload(),
+            "common": common_bootstrap_payload(g.user),
         }
 
         return self.render_template(
@@ -2869,12 +2872,17 @@ class Superset(BaseSupersetView):  # pylint: disable=too-many-public-methods
         user = (
             db.session.query(ab_models.User).filter_by(username=username).one_or_none()
         )
-        if not user:
-            abort(404, description=f"User: {username} does not exist.")
+        # Prevent returning 404 when user is not found to prevent username scanning
+        user_id = -1 if not user else user.id
+        # Prevent unauthorized access to other user's profiles,
+        # unless configured to do so on with ENABLE_BROAD_ACTIVITY_ACCESS
+        error_obj = self.get_user_activity_access_error(user_id)
+        if error_obj:
+            return error_obj
 
         payload = {
             "user": bootstrap_user_data(user, include_perms=True),
-            "common": common_bootstrap_payload(),
+            "common": common_bootstrap_payload(g.user),
         }
 
         return self.render_template(
@@ -2938,7 +2946,7 @@ class Superset(BaseSupersetView):  # pylint: disable=too-many-public-methods
         """SQL Editor"""
         payload = {
             "defaultDbId": config["SQLLAB_DEFAULT_DBID"],
-            "common": common_bootstrap_payload(),
+            "common": common_bootstrap_payload(g.user),
             **self._get_sqllab_tabs(g.user.get_id()),
         }
 

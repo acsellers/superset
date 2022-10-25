@@ -30,6 +30,7 @@ import {
   isValidTimeCompare,
   pivotOperator,
   resampleOperator,
+  renameOperator,
   contributionOperator,
   prophetOperator,
   timeComparePivotOperator,
@@ -91,10 +92,15 @@ export default function buildQuery(formData: QueryFormData) {
           rollingWindowOperator(formData, baseQueryObject),
           timeCompareOperator(formData, baseQueryObject),
           resampleOperator(formData, baseQueryObject),
-          flattenOperator(formData, baseQueryObject),
+          renameOperator(formData, {
+            ...baseQueryObject,
+            ...{ is_timeseries },
+          }),
           contributionOperator(formData, baseQueryObject),
+          flattenOperator(formData, baseQueryObject),
+          // todo: move prophet before flatten
           prophetOperator(formData, baseQueryObject),
-        ],
+        ].filter(op => op),
       },
     ];
   });

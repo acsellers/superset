@@ -113,6 +113,12 @@ const ChartOverlay = styled.div`
   }
 `;
 
+const SliceContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+`;
+
 export default class Chart extends React.Component {
   constructor(props) {
     super(props);
@@ -210,13 +216,21 @@ export default class Chart extends React.Component {
 
   getChartHeight() {
     const headerHeight = this.getHeaderHeight();
-    return this.state.height - headerHeight - this.state.descriptionHeight;
+    return Math.max(
+      this.state.height - headerHeight - this.state.descriptionHeight,
+      20,
+    );
   }
 
   getHeaderHeight() {
-    return (
-      (this.headerRef && this.headerRef.offsetHeight) || DEFAULT_HEADER_HEIGHT
-    );
+    if (this.headerRef) {
+      const computedStyle = getComputedStyle(this.headerRef).getPropertyValue(
+        'margin-bottom',
+      );
+      const marginBottom = parseInt(computedStyle, 10) || 0;
+      return this.headerRef.offsetHeight + marginBottom;
+    }
+    return DEFAULT_HEADER_HEIGHT;
   }
 
   setDescriptionRef(ref) {
@@ -290,6 +304,7 @@ export default class Chart extends React.Component {
       resultType: 'full',
       resultFormat: 'csv',
       force: true,
+      ownState: this.props.ownState,
     });
   }
 
@@ -370,7 +385,7 @@ export default class Chart extends React.Component {
         })
       : {};
     return (
-      <div
+      <SliceContainer
         className="chart-slice"
         data-test="chart-grid-component"
         data-test-chart-id={id}
@@ -407,6 +422,8 @@ export default class Chart extends React.Component {
           isFullSize={isFullSize}
           chartStatus={chart.chartStatus}
           formData={formData}
+          width={width}
+          height={this.getHeaderHeight()}
         />
 
         {/*
@@ -468,7 +485,7 @@ export default class Chart extends React.Component {
             datasetsStatus={datasetsStatus}
           />
         </div>
-      </div>
+      </SliceContainer>
     );
   }
 }

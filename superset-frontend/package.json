@@ -1,6 +1,6 @@
 {
   "name": "superset",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "description": "Superset is a data exploration platform designed to be visual, intuitive, and interactive.",
   "keywords": [
     "big",
@@ -310,7 +310,7 @@
     "jsdom": "^16.4.0",
     "lerna": "^4.0.0",
     "less": "^3.12.2",
-    "less-loader": "^5.0.0",
+    "less-loader": "^10.2.0",
     "mini-css-extract-plugin": "^2.3.0",
     "mock-socket": "^9.0.3",
     "node-fetch": "^2.6.1",
@@ -341,5 +341,11 @@
   "engines": {
     "node": "^16.9.1",
     "npm": "^7.5.4 || ^8.1.2"
+  },
+  "overrides": {
+    "omnibar": {
+      "react": "^16.13.1",
+      "react-dom": "^16.13.0"
+    }
   }
 }
