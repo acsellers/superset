@@ -88,6 +88,25 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'pie_ordering',
+            config: {
+              type: 'SelectControl',
+              label: t('Ordering'),
+              default: 'default',
+              renderTrigger: true,
+              choices: [
+                ['default', 'Largest to Smallest'],
+                ['reverse', 'Smallest to Largest'],
+                ['alpha', 'Alphabetical'],
+              ],
+              description: t(
+                'The method by which which slices will be ordered',
+              ),
+            },
+          },
+        ],
         ...legendSection,
         // eslint-disable-next-line react/jsx-key
         [<div className="section-header">{t('Labels')}</div>],
