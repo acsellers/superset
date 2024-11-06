@@ -71,6 +71,9 @@ import {
   BigNumberPeriodOverPeriodChartPlugin,
   EchartsHeatmapChartPlugin,
 } from '@superset-ui/plugin-chart-echarts';
+import { SyntropyLineAverage } from 'syntropy-line-average';
+import { SyntropyLineAndBar } from 'syntropy-line-and-bar';
+import { SyntropyCombinationChart } from 'syntropy-combination-chart';
 import {
   SelectFilterPlugin,
   RangeFilterPlugin,
@@ -164,6 +167,11 @@ export default class MainPreset extends Preset {
         }),
         new EchartsHeatmapChartPlugin().configure({ key: 'heatmap_v2' }),
         new EchartsHistogramChartPlugin().configure({ key: 'histogram_v2' }),
+        new SyntropyLineAverage().configure({ key: 'syntropy_line_average' }),
+        new SyntropyLineAndBar().configure({ key: 'syntropy_line_and_bar' }),
+        new SyntropyCombinationChart().configure({
+          key: 'syntropy-combination-chart',
+        }),
         new SelectFilterPlugin().configure({ key: FilterPlugins.Select }),
         new RangeFilterPlugin().configure({ key: FilterPlugins.Range }),
         new TimeFilterPlugin().configure({ key: FilterPlugins.Time }),

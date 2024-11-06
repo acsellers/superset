@@ -157,6 +157,7 @@ export default function transformProps(
     showLegend,
     showLabelsThreshold,
     sliceId,
+    pieOrdering,
     showTotal,
     roseType,
   }: EchartsPieFormData = {
@@ -203,6 +204,40 @@ export default function transformProps(
 
   let totalValue = 0;
 
+  switch (pieOrdering) {
+    case 'reverse':
+      data.sort((a, b) => <number>a[metricLabel] - <number>b[metricLabel]);
+      break;
+    case 'alpha':
+      data.sort((a, b) => {
+        const nameA = extractGroupbyLabel({
+          datum: a,
+          groupby: groupbyLabels,
+          coltypeMapping,
+          timeFormatter: getTimeFormatter(dateFormat),
+        });
+        const nameB = extractGroupbyLabel({
+          datum: b,
+          groupby: groupbyLabels,
+          coltypeMapping,
+          timeFormatter: getTimeFormatter(dateFormat),
+        });
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        // names must be equal
+        return 0;
+      });
+      break;
+    default:
+      data.sort((a, b) => <number>b[metricLabel] - <number>a[metricLabel]);
+      break;
+  }
+  
   const transformedData: PieSeriesOption[] = data.map(datum => {
     const name = extractGroupbyLabel({
       datum,
